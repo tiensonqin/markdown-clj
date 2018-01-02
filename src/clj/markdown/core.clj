@@ -99,7 +99,9 @@
               (if line
                 (recur next-line
                        (.readLine rdr)
-                       (assoc (transformer (str line "\n") next-line (dissoc state :skip-next-line?))
+                       (assoc (transformer (if next-line
+                                             (str line "\n")
+                                             line) next-line (dissoc state :skip-next-line?))
                          :last-line-empty? (empty? (.trim line))))
                 (transformer (footer (:footnotes state)) nil (assoc state :eof true))))))
         (.flush wrt)

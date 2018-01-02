@@ -101,25 +101,25 @@
     [text state]
     (let [currently-frozen (volatile! {:frozen-strings frozen-strings})]
       [(string/replace
-         text
-         #"<https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]>"
-         #(let [[url frozen-strings] (freeze-string (subs % 1 (dec (count %))) @currently-frozen)]
-            (vreset! currently-frozen frozen-strings)
-            (str "<a href=\"" url "\">" url "</a>")))
+        text
+        #"<https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]>"
+        #(let [[url frozen-strings] (freeze-string (subs % 1 (dec (count %))) @currently-frozen)]
+           (vreset! currently-frozen frozen-strings)
+           (str "<a href=\"" url "\">" url "</a>")))
        (merge state @currently-frozen)])))
 
 (defn autoemail-transformer [text state]
   [(if (or (:code state) (:codeblock state))
      text
      (string/replace
-       text
-       #"<[\w._%+-]+@[\w.-]+\.[\w]{2,4}>"
-       #(let [encoded (if (:clojurescript state)
-                        (subs % 1 (dec (count %)))
-                        (->> (subs % 1 (dec (count %)))
-                             (map (fn [c] (if (> (rand) 0.5) (*formatter* "&#x%02x;" (int c)) c)))
-                             (apply str)))]
-          (str "<a href=\"mailto:" encoded "\">" encoded "</a>"))))
+      text
+      #"<[\w._%+-]+@[\w.-]+\.[\w]{2,4}>"
+      #(let [encoded (if (:clojurescript state)
+                       (subs % 1 (dec (count %)))
+                       (->> (subs % 1 (dec (count %)))
+                            (map (fn [c] (if (> (rand) 0.5) (*formatter* "&#x%02x;" (int c)) c)))
+                            (apply str)))]
+         (str "<a href=\"mailto:" encoded "\">" encoded "</a>"))))
    state])
 
 (defn set-line-state [text {:keys [inline-heading] :as state}]
@@ -198,8 +198,8 @@
        (assoc state :skip-next-line? true :codeblock-end true :last-line-empty? true)]
 
       (and
-        (not indented-code)
-        (= [\` \` \`] (take 3 trimmed)))
+       (not indented-code)
+       (= [\` \` \`] (take 3 trimmed)))
       (let [[lang code] (split-with (partial not= \space) (drop 3 trimmed))
             s         (apply str (rest code))
             formatter (:code-style state)]
@@ -224,10 +224,10 @@
   (if (:code state)
     [text state]
     (if (and
-          (or (empty? (drop-while #{\* \space} text))
-              (empty? (drop-while #{\- \space} text))
-              (empty? (drop-while #{\_ \space} text)))
-          (> (count (remove #{\space} text)) 2))
+         (or (empty? (drop-while #{\* \space} text))
+             (empty? (drop-while #{\- \space} text))
+             (empty? (drop-while #{\_ \space} text)))
+         (> (count (remove #{\space} text)) 2))
       [(str "<hr/>") (assoc state :hr true)]
       [text state])))
 
@@ -286,12 +286,12 @@
     (->> (:processed footnotes)
          (into (sorted-map))
          (reduce
-           (fn [footnotes [id label]]
-             (str footnotes
-                  "<li id='fn-" id "'>"
-                  (apply str (interpose " " label))
-                  "<a href='#fnref" id "'>&#8617;</a></li>"))
-           "")
+          (fn [footnotes [id label]]
+            (str footnotes
+                 "<li id='fn-" id "'>"
+                 (apply str (interpose " " label))
+                 "<a href='#fnref" id "'>&#8617;</a></li>"))
+          "")
          (#(str "<ol class='footnotes'>" % "</ol>")))))
 
 (defn parse-metadata-line
@@ -336,11 +336,11 @@
   {:pre [(sequential? lines-seq)
          (every? string? lines-seq)]}
   (reduce
-    (fn [acc line]
-      (if-let [parsed (parse-metadata-line line)]
-        (conj acc parsed)
-        (reduced (flatten-metadata acc))))
-    [] lines-seq))
+   (fn [acc line]
+     (if-let [parsed (parse-metadata-line line)]
+       (conj acc parsed)
+       (reduced (flatten-metadata acc))))
+   [] lines-seq))
 
 (def transformer-vector
   [set-line-state
