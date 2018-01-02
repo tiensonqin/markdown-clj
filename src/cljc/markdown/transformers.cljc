@@ -335,13 +335,13 @@
    [] lines-seq))
 
 (def transformer-vector
-  [set-line-state
+  [hr
+   set-line-state
    empty-line
    inhibit
    escape-inhibit-separator
    code
    codeblock
-   hr
    escaped-chars
    inline-code
    autoemail-transformer

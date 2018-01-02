@@ -14,7 +14,7 @@
     </license>
   </licenses>
   <scm>
-    <tag>e7f8f1167eeea39eeecc2cc24ac9b489a34dbd14</tag>
+    <tag>762e1e30d8b3b917ac2ab950c40f54152857ca57</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>

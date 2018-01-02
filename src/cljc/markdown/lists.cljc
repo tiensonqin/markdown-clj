@@ -8,26 +8,27 @@
      (str "</li></" (name list-type) ">"))))
 
 (defn add-row [row-type list-type num-indents indents content state]
-  (if list-type
-    (cond
-      (< num-indents indents)
-      (let [lists-to-close  (take-while #(> (second %) num-indents) (reverse (:lists state)))
-            remaining-lists (vec (drop-last (count lists-to-close) (:lists state)))]
+  (let [content (string/trim content)]
+    (if list-type
+     (cond
+       (< num-indents indents)
+       (let [lists-to-close  (take-while #(> (second %) num-indents) (reverse (:lists state)))
+             remaining-lists (vec (drop-last (count lists-to-close) (:lists state)))]
 
-        [(apply str (close-lists lists-to-close) "</li><li>" content)
-         (assoc state :lists (if (> num-indents (second (last remaining-lists)))
-                               (conj remaining-lists [row-type num-indents])
-                               remaining-lists))])
+         [(apply str (close-lists lists-to-close) "</li><li>" content)
+          (assoc state :lists (if (> num-indents (second (last remaining-lists)))
+                                (conj remaining-lists [row-type num-indents])
+                                remaining-lists))])
 
-      (> num-indents indents)
-      [(str "<" (name row-type) "><li>" content)
-       (update-in state [:lists] conj [row-type num-indents])]
+       (> num-indents indents)
+       [(str "<" (name row-type) "><li>" content)
+        (update-in state [:lists] conj [row-type num-indents])]
 
-      (= num-indents indents)
-      [(str "</li><li>" content) state])
+       (= num-indents indents)
+       [(str "</li><li>" content) state])
 
-    [(str "<" (name row-type) "><li>" content)
-     (assoc state :lists [[row-type num-indents]])]))
+     [(str "<" (name row-type) "><li>" content)
+      (assoc state :lists [[row-type num-indents]])])))
 
 (defn ul [text state]
   (let [[list-type indents] (last (:lists state))
@@ -80,4 +81,4 @@
 
               :else
               [text state])))]
-    [(string/trim-newline text) state]))
+    [text state]))
