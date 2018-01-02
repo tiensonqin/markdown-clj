@@ -69,7 +69,7 @@
                 state)]
           (if (not-empty more)
             (recur more
-                   (assoc (transformer html line (first more) (dissoc state :skip-next-line?))
+                   (assoc (transformer html (str line "\n") (first more) (dissoc state :skip-next-line?))
                      :last-line-empty? (empty? line)))
             (transformer (.append html (footer (:footnotes state))) line "" (assoc state :eof true)))))
       {:metadata metadata :html (.toString html)})))

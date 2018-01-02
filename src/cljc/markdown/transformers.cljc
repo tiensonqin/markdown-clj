@@ -81,9 +81,18 @@
       [text state])))
 
 (defn br [text {:keys [code lists] :as state}]
-  [(if (and (= [\space \space] (take-last 2 text))
+  [(if (and (or
+             (= [\space \space] (take-last 2 text))
+             (= [\n] (last text)))
             (not (or code lists)))
      (str (apply str (drop-last 2 text)) "<br />")
+     text)
+   state])
+
+(defn new-line [text {:keys [code lists] :as state}]
+  [(if (and (= \newline (last text))
+            (not (or code lists)))
+     (str (apply str (drop-last 1 text)) "<br />")
      text)
    state])
 
@@ -365,6 +374,7 @@
    table
    paragraph
    br
+   new-line
    thaw-strings
    dashes
    clear-line-state])
