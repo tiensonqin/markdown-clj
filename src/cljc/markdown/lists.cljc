@@ -4,8 +4,8 @@
 
 (defn close-lists [lists]
   (string/join
-    (for [[list-type] lists]
-      (str "</li></" (name list-type) ">"))))
+   (for [[list-type] lists]
+     (str "</li></" (name list-type) ">"))))
 
 (defn add-row [row-type list-type num-indents indents content state]
   (if list-type
@@ -42,41 +42,42 @@
     (add-row :ol list-type num-indents indents (or (make-heading content false) content) state)))
 
 (defn li [text {:keys [code codeblock last-line-empty? eof lists] :as state}]
-  (cond
+  (let [[text state]
+        (cond
+          (and last-line-empty? (string/blank? text))
+          [(str (close-lists (reverse lists)) text)
+           (-> state (dissoc :lists) (assoc :last-line-empty? false))]
 
-    (and last-line-empty? (string/blank? text))
-    [(str (close-lists (reverse lists)) text)
-     (-> state (dissoc :lists) (assoc :last-line-empty? false))]
+          (or code codeblock)
+          (if (and lists (or last-line-empty? eof))
+            [(str (close-lists (reverse lists)) text)
+             (-> state (dissoc :lists) (assoc :last-line-empty? false))]
+            [text state])
 
-    (or code codeblock)
-    (if (and lists (or last-line-empty? eof))
-      [(str (close-lists (reverse lists)) text)
-       (-> state (dissoc :lists) (assoc :last-line-empty? false))]
-      [text state])
+          (and (not eof)
+               lists
+               (string/blank? text))
+          [text (assoc state :last-line-empty? true)]
 
-    (and (not eof)
-         lists
-         (string/blank? text))
-    [text (assoc state :last-line-empty? true)]
+          :else
+          (let [indents  (if last-line-empty? 0 (count (take-while (partial = \space) text)))
+                trimmed  (string/trim text)
+                in-list? (:lists state)]
+            (cond
+              (re-find #"^[\*\+-] " trimmed)
+              (ul (if in-list? text trimmed) state)
 
-    :else
-    (let [indents  (if last-line-empty? 0 (count (take-while (partial = \space) text)))
-          trimmed  (string/trim text)
-          in-list? (:lists state)]
-      (cond
-        (re-find #"^[\*\+-] " trimmed)
-        (ul (if in-list? text trimmed) state)
+              (re-find #"^[0-9]+\. " trimmed)
+              (ol (if in-list? text trimmed) state)
 
-        (re-find #"^[0-9]+\. " trimmed)
-        (ol (if in-list? text trimmed) state)
+              (pos? indents)
+              [text state]
 
-        (pos? indents)
-        [text state]
+              (and (or eof last-line-empty?)
+                   (not-empty lists))
+              [(close-lists (reverse lists))
+               (assoc state :lists [] :buf text)]
 
-        (and (or eof last-line-empty?)
-             (not-empty lists))
-        [(close-lists (reverse lists))
-         (assoc state :lists [] :buf text)]
-
-        :else
-        [text state]))))
+              :else
+              [text state])))]
+    [(string/trim-newline text) state]))

@@ -1,4 +1,4 @@
-(defproject tiensonqin/fork-markdown-clj "1.0.1"
+(defproject tiensonqin/forked-markdown-clj "0.0.1-SNAPSHOT"
   :description "Markdown parser"
   :url "https://github.com/tiensonqin/markdown-clj"
   :license {:name "Eclipse Public License"
@@ -11,11 +11,11 @@
                    :all       (constantly true)}
   :auto-clean false
 
-   :aliases {"test-cljs" ["doo" "rhino" "test" "once"]
-             "test"      ["do" "test," "test-cljs"]
-             "cleantest" ["do" "clean," "test"]
-             "install"   ["do" "clean," "install"]
-             "deploy"    ["do" "clean," "deploy" "clojars"]}
+  :aliases {"test-cljs" ["doo" "rhino" "test" "once"]
+            "test"      ["do" "test," "test-cljs"]
+            "cleantest" ["do" "clean," "test"]
+            "install"   ["do" "clean," "install"]
+            "deploy"    ["do" "clean," "deploy" "clojars"]}
 
   :source-paths ["src/clj" "src/cljc" "src/cljs"]
   :cljsbuild
