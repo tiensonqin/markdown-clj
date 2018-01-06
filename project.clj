@@ -1,4 +1,4 @@
-(defproject tiensonqin/forked-markdown-clj "0.0.1-SNAPSHOT"
+(defproject com.tiensonqin/forked-markdown-clj "0.0.1"
   :description "Markdown parser"
   :url "https://github.com/tiensonqin/markdown-clj"
   :license {:name "Eclipse Public License"
