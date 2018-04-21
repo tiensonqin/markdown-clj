@@ -87,6 +87,21 @@
      text)
    state])
 
+(defn direct-link-transformer [text {:keys [code frozen-strings] :as state}]
+  (cond
+    code
+    [text state]
+
+    :else
+    (let [currently-frozen (volatile! {:frozen-strings frozen-strings})]
+      [(string/replace
+        text
+        #"^[\s]?https?://[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|][\s]?$"
+        #(let [[url frozen-strings] (freeze-string (subs % 0 (count %)) @currently-frozen)]
+           (vreset! currently-frozen frozen-strings)
+           (str "<a href=\"" url "\">" url "</a>")))
+       (merge state @currently-frozen)])))
+
 (defn autourl-transformer [text {:keys [code frozen-strings] :as state}]
   (if code
     [text state]
@@ -346,8 +361,10 @@
    inline-code
    autoemail-transformer
    autourl-transformer
+
    image
    image-reference-link
+   direct-link-transformer
    link
    implicit-reference-link
    reference-link

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>tiensonqin</groupId>
+  <groupId>com.tiensonqin</groupId>
   <artifactId>forked-markdown-clj</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>forked-markdown-clj</name>
   <description>Markdown parser</description>
   <url>https://github.com/tiensonqin/markdown-clj</url>
@@ -14,7 +14,7 @@
     </license>
   </licenses>
   <scm>
-    <tag>762e1e30d8b3b917ac2ab950c40f54152857ca57</tag>
+    <tag>61ae0b1fae8bd52c345cf23eacfd25e863cff74c</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
