@@ -2,13 +2,17 @@
   (:require [clojure.string :as string]
             [markdown.common :refer [*substring* make-heading]]))
 
+(defn trim
+  [s]
+  (string/triml s))
+
 (defn close-lists [lists]
   (string/join
    (for [[list-type] lists]
      (str "</li></" (name list-type) ">"))))
 
 (defn add-row [row-type list-type num-indents indents content state]
-  (let [content (string/trim content)]
+  (let [content (trim content)]
     (if list-type
      (cond
        (< num-indents indents)
@@ -33,13 +37,13 @@
 (defn ul [text state]
   (let [[list-type indents] (last (:lists state))
         num-indents (count (take-while (partial = \space) text))
-        content     (string/trim (*substring* text (inc num-indents)))]
+        content     (trim (*substring* text (inc num-indents)))]
     (add-row :ul list-type num-indents indents (or (make-heading content false) content) state)))
 
 (defn ol [text state]
   (let [[list-type indents] (last (:lists state))
         num-indents (count (take-while (partial = \space) text))
-        content     (string/trim (string/join (drop-while (partial not= \space) (string/trim text))))]
+        content     (trim (string/join (drop-while (partial not= \space) (trim text))))]
     (add-row :ol list-type num-indents indents (or (make-heading content false) content) state)))
 
 (defn li [text {:keys [code codeblock last-line-empty? eof lists] :as state}]
@@ -62,7 +66,7 @@
 
           :else
           (let [indents  (if last-line-empty? 0 (count (take-while (partial = \space) text)))
-                trimmed  (string/trim text)
+                trimmed  (trim text)
                 in-list? (:lists state)]
             (cond
               (re-find #"^[\*\+-] " trimmed)
